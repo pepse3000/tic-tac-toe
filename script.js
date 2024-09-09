@@ -2,7 +2,9 @@ function createGameboard() {
     let playBoard = Array(9).fill("");
 
     const clearBoard = function() {
-        playBoard = Array(9).fill("");
+        for (let i = 0; i < playBoard.length; i++) {
+            playBoard[i] = "";
+        }
     }
 
     const countWinner = function() {
@@ -135,7 +137,6 @@ function startGame() {
             }
         }
 
-        console.log(winner);
         gameboard.clearBoard();
     }
 
