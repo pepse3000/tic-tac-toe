@@ -73,17 +73,17 @@ function createPlayer(name, token) {
     const playerName = name;
     const playerToken = token;
 
-    const addToken = function(token, index, playBoard) {
+    const addToken = function(index, playBoard) {
         let tokenList = ["O", "X"];
 
-        if (!tokenList.includes(token)) {
+        if (!tokenList.includes(playerToken)) {
             return console.error("token must be O or X");
         }
 
         if (playBoard[index] != "") {
             return console.error("token already in place");
         } else {
-            playBoard[index] = token;
+            playBoard[index] = playerToken;
         }
     }
 
