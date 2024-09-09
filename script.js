@@ -2,6 +2,10 @@ function createGameboard() {
     let playBoard = Array(9).fill("");
 
     const clearBoard = function() {
+        let tokenHolders = document.querySelectorAll(".token-holder");
+
+        tokenHolders.forEach(el => el.textContent = "");
+
         for (let i = 0; i < playBoard.length; i++) {
             playBoard[i] = "";
         }
@@ -83,15 +87,35 @@ function createPlayer(name, token) {
         }
 
         if (playBoard[index] != "") {
-            console.log(playBoard)
             return console.error("token already in place");
         } else {
             playBoard[index] = playerToken;
+            let block = document.querySelector("#b" + (index + 1));
+            block.textContent = playerToken;
         }
     }
 
     return { addToken, playerToken, playerName };
 };
+
+
+function showHoverElement(holder) {
+    holder.textContent = "X";
+}
+
+function hideHoverElement(holder) {
+    holder.textContent = "";
+}
+
+
+function displayController() {
+    let tokenHolders = document.querySelectorAll(".token-holder");
+
+    for (let i = 0; i < tokenHolders.length; i++) {
+        tokenHolders[i].addEventListener("mouseover", () => showHoverElement(tokenHolders[i]));
+        tokenHolders[i].addEventListener("mouseout", () => hideHoverElement(tokenHolders[i]));
+    }
+}
 
 
 function startGame() {
@@ -136,8 +160,6 @@ function startGame() {
                 break;
             }
         }
-
-        gameboard.clearBoard();
     }
 
     return { playGame }
