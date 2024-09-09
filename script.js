@@ -11,6 +11,20 @@ function createGameboard() {
         }
     }
 
+    const addToken = function(index, playerToken) {
+        let tokenList = ["O", "X"];
+
+        if (!tokenList.includes(playerToken)) {
+            return console.error("token must be O or X");
+        }
+
+        if (playBoard[index] != "") {
+            return console.error("token already in place");
+        } else {
+            playBoard[index] = playerToken;
+        }
+    }
+
     const countWinner = function() {
         let board = playBoard;
         let positionsX = [];
@@ -71,96 +85,80 @@ function createGameboard() {
         return winner;
     }
 
-    return { clearBoard, countWinner, playBoard }
+    const addEventsToBoard = (function () {
+        let blocks = document.querySelectorAll(".token-holder");
+        blocks.forEach(el => el.addEventListener("click", e => {
+            GameController.playRound(e.target.id)}
+        ))
+    })
+
+    const renderArray = (function() {
+        let tokenHolders = document.querySelectorAll(".token-holder");
+
+        for (let i = 0; i < tokenHolders.length; i++) {
+            tokenHolders[i].textContent = playBoard[i];
+        }
+    })
+
+    return { clearBoard, countWinner, playBoard, addToken, addEventsToBoard, renderArray }
 };
 
-
-function createPlayer(name, token) {
-    const playerName = name;
-    const playerToken = token;
-
-    const addToken = function(index, playBoard) {
-        let tokenList = ["O", "X"];
-
-        if (!tokenList.includes(playerToken)) {
-            return console.error("token must be O or X");
-        }
-
-        if (playBoard[index] != "") {
-            return console.error("token already in place");
-        } else {
-            playBoard[index] = playerToken;
-            let block = document.querySelector("#b" + (index + 1));
-            block.textContent = playerToken;
-        }
+const Player = function(name, token) {
+    return {
+        name,
+        token
     }
-
-    return { addToken, playerToken, playerName };
 };
 
+const GameController = (function startGame(playerOne, playerTwo, playerOneMarker, playerTwoMarker) {
+    let player1 = Player(playerOne, playerOneMarker);
+    let player2 = Player(playerTwo, playerTwoMarker);
+    let gameboard = createGameboard();
+    let currentPlayerTurn = player1.token;
+    let resultPane = document.querySelector(".result")
 
-function showHoverElement(holder) {
-    holder.textContent = "X";
-}
+    const switchPlayerTurn = function() {
+        currentPlayerTurn = currentPlayerTurn === player1.token ? player2.token : player1.token;
+    };
 
-function hideHoverElement(holder) {
-    holder.textContent = "";
-}
+    gameboard.addEventsToBoard();
 
+    let count = 0;
+    const playRound = function(playerChoice) {
+        gameboard.addToken(playerChoice.charAt(1), currentPlayerTurn);
+        switchPlayerTurn();
+        gameboard.renderArray();
+        let winner = gameboard.countWinner();
+        count += 1;
 
-function displayController() {
-    let tokenHolders = document.querySelectorAll(".token-holder");
+        if (winner == "X") {
+            resultPane.textContent = "Player 1 Win!"
+            currentPlayerTurn = player1.token
+            gameboard.clearBoard();
+            gameboard.renderArray();
+            count = 0;
+            return;
+        }
 
-    for (let i = 0; i < tokenHolders.length; i++) {
-        tokenHolders[i].addEventListener("mouseover", () => showHoverElement(tokenHolders[i]));
-        tokenHolders[i].addEventListener("mouseout", () => hideHoverElement(tokenHolders[i]));
-    }
-}
+        if (winner == "O") {
+            resultPane.textContent = "Player 2 Win!"
+            currentPlayerTurn = player1.token
+            gameboard.clearBoard();
+            gameboard.renderArray();
+            count = 0;
+            return;
+        }
 
-
-function startGame() {
-    const player1 = createPlayer("Bib", "X");
-    const player2 = createPlayer("Dum", "O");
-
-    const gameboard = createGameboard();
-
-    const playRoundX = function() {
-        let indexX = +prompt("X turn");
-
-        player1.addToken(indexX, gameboard.playBoard);
-        return gameboard.countWinner();
-    }
-
-    const playRoundO = function() {
-        let indexO = +prompt("O turn");
-
-        player2.addToken(indexO, gameboard.playBoard);
-        return gameboard.countWinner();
-    }
-
-    const playGame = function() {
-        let winner;
-        let count = 0;
-
-        while (!winner) {
-            count += 1;
-
-            if (playRoundX()) {
-                winner = "X";
-                break;
-            }
-
-            if (playRoundO()) {
-                winner = "O";
-                break;
-            }
-            
-            if (count > 8) {
-                winner = "Draw";
-                break;
-            }
+        if (count > 8) {
+            resultPane.textContent = "Draw!";
+            currentPlayerTurn = player1.token;
+            gameboard.clearBoard();
+            gameboard.renderArray();
+            count = 0;
+            return;
         }
     }
 
-    return { playGame }
-};
+    return { playRound }
+})("Player1", "Player2", "X", "O");
+
