@@ -39,4 +39,9 @@ body {
     width: 1fr;
     border: 1px solid black;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.token-holder:hover {
+    background-color: rgb(203, 203, 203);
 }
