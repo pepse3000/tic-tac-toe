@@ -81,6 +81,7 @@ function createPlayer(name, token) {
         }
 
         if (playBoard[index] != "") {
+            console.log(playBoard)
             return console.error("token already in place");
         } else {
             playBoard[index] = playerToken;
@@ -100,21 +101,24 @@ function startGame() {
     const playRoundX = function() {
         let indexX = +prompt("X turn");
 
-        player1.addToken(player1.playerToken, indexX, gameboard.playBoard);
+        player1.addToken(indexX, gameboard.playBoard);
         return gameboard.countWinner();
     }
 
     const playRoundO = function() {
         let indexO = +prompt("O turn");
 
-        player2.addToken(player2.playerToken, indexO, gameboard.playBoard);
+        player2.addToken(indexO, gameboard.playBoard);
         return gameboard.countWinner();
     }
 
     const playGame = function() {
         let winner;
+        let count = 0;
 
         while (!winner) {
+            count += 1;
+
             if (playRoundX()) {
                 winner = "X";
                 break;
@@ -122,6 +126,11 @@ function startGame() {
 
             if (playRoundO()) {
                 winner = "O";
+                break;
+            }
+            
+            if (count > 8) {
+                winner = "Draw";
                 break;
             }
         }
