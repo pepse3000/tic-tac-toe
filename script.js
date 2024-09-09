@@ -161,4 +161,3 @@ const GameController = (function startGame(playerOne, playerTwo, playerOneMarker
 
     return { playRound }
 })("Player1", "Player2", "X", "O");
-
