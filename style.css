@@ -32,6 +32,10 @@ body {
 }
 
 .token-holder {
+    font-size: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 1fr;
     border: 1px solid black;
 }
